@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
 const multer = require("multer");
+const { ocrFromImage } = require("./middlewares/ocrMiddleware");
+const app = express();
 
 const { storage } = require("./utils/multerStorage");
 const upload = multer({ storage: storage });
@@ -20,7 +21,7 @@ app.get("/", (req, res) => {
 });
 
 // Uploading route
-app.post("/upload", upload.single("image"), (req, res) => {
+app.post("/upload", upload.single("image"), ocrFromImage, (req, res) => {
   const data = req.file;
   console.log("img", data);
   res
