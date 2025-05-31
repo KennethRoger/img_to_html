@@ -3,7 +3,8 @@ const cors = require("cors");
 const app = express();
 const multer = require("multer");
 
-const upload = multer({ dest: "./uploads" });
+const { storage } = require("./utils/multerStorage");
+const upload = multer({ storage: storage });
 
 require("dotenv").config();
 
@@ -21,7 +22,7 @@ app.get("/", (req, res) => {
 
 app.post("/upload", upload.single("image"), (req, res) => {
   const data = req.file;
-  console.log(data);
+  console.log("img",data);
   res
     .status(200)
     .json({ success: true, message: "Successfully recieved formData" });
