@@ -4,7 +4,6 @@ async function ocrFromImage(req, res, next) {
   try {
     const fileLoc = req.fileLoc;
     const data = await ocr(fileLoc);
-    console.log(data);
     next();
   } catch (err) {
     throw err;

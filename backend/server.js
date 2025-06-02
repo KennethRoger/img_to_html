@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 // Uploading route
 app.post("/upload", upload.single("image"), ocrFromImage, (req, res) => {
   const data = req.file;
-  console.log("img", data);
+  // console.log("img", data);
   res
     .status(200)
     .json({ success: true, message: "Successfully recieved formData" });
