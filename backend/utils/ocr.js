@@ -19,7 +19,7 @@ async function ocr(imgPath) {
     const newPath = path.join(
       __dirname,
       "..",
-      `uploads/preprocessed/${baseName}`
+      `uploads/ocrProcessed/${baseName}`
     );
     await image.write(newPath);
     const { data } = await worker.recognize(
