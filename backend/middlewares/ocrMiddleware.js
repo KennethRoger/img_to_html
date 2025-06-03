@@ -1,6 +1,6 @@
 const { ocr } = require("../utils/ocr");
 
-async function ocrFromImage(req, res, next) {
+async function ocrMiddleware(req, res, next) {
   try {
     const fileLoc = req.fileLoc;
     const data = await ocr(fileLoc);
@@ -10,4 +10,4 @@ async function ocrFromImage(req, res, next) {
   }
 }
 
-module.exports = { ocrFromImage };
+module.exports = { ocrMiddleware };

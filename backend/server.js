@@ -1,10 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
-const { ocrFromImage } = require("./middlewares/ocrMiddleware");
+const { ocrMiddleware } = require("./middlewares/ocrMiddleware");
 const app = express();
 
 const { storage } = require("./utils/multerStorage");
+const { maskTextMiddleware } = require("./middlewares/maskTextMiddleware");
 const upload = multer({ storage: storage });
 
 require("dotenv").config();
@@ -21,13 +22,19 @@ app.get("/", (req, res) => {
 });
 
 // Uploading route
-app.post("/upload", upload.single("image"), ocrFromImage, (req, res) => {
-  const data = req.file;
-  // console.log("img", data);
-  res
-    .status(200)
-    .json({ success: true, message: "Successfully recieved formData" });
-});
+app.post(
+  "/upload",
+  upload.single("image"),
+  ocrMiddleware,
+  maskTextMiddleware,
+  (req, res) => {
+    const data = req.file;
+    // console.log("img", data);
+    res
+      .status(200)
+      .json({ success: true, message: "Successfully recieved formData" });
+  }
+);
 
 app.listen(port, () => {
   console.log("Server started running on port 3000");
