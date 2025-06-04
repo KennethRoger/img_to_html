@@ -6,6 +6,8 @@ const app = express();
 
 const { storage } = require("./utils/multerStorage");
 const { maskTextMiddleware } = require("./middlewares/maskTextMiddleware");
+const { edgeDetectMiddleware } = require("./middlewares/edgeDetectMiddleware");
+
 const upload = multer({ storage: storage });
 
 require("dotenv").config();
@@ -27,6 +29,7 @@ app.post(
   upload.single("image"),
   ocrMiddleware,
   maskTextMiddleware,
+  edgeDetectMiddleware,
   (req, res) => {
     const data = req.file;
     // console.log("img", data);

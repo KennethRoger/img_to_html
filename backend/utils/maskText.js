@@ -2,6 +2,52 @@ const { Jimp, intToRGBA } = require("jimp");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 
+async function histogramEqualization(image) {
+  const pixels = [];
+  const histogram = new Array(256).fill(0);
+
+  // Build histogram
+  image.scan(
+    0,
+    0,
+    image.bitmap.width,
+    image.bitmap.height,
+    function (x, y, idx) {
+      const gray = this.bitmap.data[idx];
+      histogram[gray]++;
+      pixels.push({ x, y, value: gray });
+    }
+  );
+
+  // Calculate cumulative distribution
+  const cdf = new Array(256);
+  cdf[0] = histogram[0];
+  for (let i = 1; i < 256; i++) {
+    cdf[i] = cdf[i - 1] + histogram[i];
+  }
+
+  // Normalize CDF
+  const totalPixels = image.bitmap.width * image.bitmap.height;
+  const normalizedCdf = cdf.map((val) => Math.round((val / totalPixels) * 255));
+
+  // Apply equalization
+  image.scan(
+    0,
+    0,
+    image.bitmap.width,
+    image.bitmap.height,
+    function (x, y, idx) {
+      const oldValue = this.bitmap.data[idx];
+      const newValue = normalizedCdf[oldValue];
+      this.bitmap.data[idx] = newValue; // R
+      this.bitmap.data[idx + 1] = newValue; // G
+      this.bitmap.data[idx + 2] = newValue; // B
+    }
+  );
+
+  return image;
+}
+
 // Function to mask a region with a color
 function maskRegion(x0, y0, width, height, image) {
   x0 = Math.max(0, x0 - 5);
@@ -12,14 +58,6 @@ function maskRegion(x0, y0, width, height, image) {
   // const fillColor = 0xff00ffff;
   for (let x = x0; x < x0 + width; ++x) {
     for (let y = y0; y < y0 + height; ++y) {
-      // if (
-      //   x === x0 ||
-      //   y === y0 ||
-      //   x === x0 + width - 1 ||
-      //   y === y0 + height - 1
-      // ) {
-      //   image.setPixelColor(fillColor, x, y);
-      // }
       image.setPixelColor(fillColor, x, y);
     }
   }
@@ -28,7 +66,7 @@ function maskRegion(x0, y0, width, height, image) {
 // Function to mask text in an image
 async function maskText(file) {
   try {
-    const image = await Jimp.read(file);
+    let image = await Jimp.read(file);
     const bboxJsonArr = await fs.readFile(
       path.join(__dirname, "..", "data/text.JSON"),
       "utf-8"
@@ -51,10 +89,11 @@ async function maskText(file) {
 
     // Additional image processing for edge detection
     image.greyscale();
-    image.gaussian(1);
-    // image.contrast(0.3);
+    image.gaussian(2);
+    image.contrast(0.1);
     image.normalize();
     // apply histogram equilization for test purpose later
+    image = await histogramEqualization(image);
 
     const jsonData = JSON.stringify(bboDataArr);
     await fs.writeFile(path.join(__dirname, "..", "data/text.JSON"), jsonData);

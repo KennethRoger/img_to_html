@@ -10,3 +10,5 @@ async function edgeDetectMiddleware(req, res, next) {
     next(err);
   }
 }
+
+module.exports = { edgeDetectMiddleware };
