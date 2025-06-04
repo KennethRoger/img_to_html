@@ -4,7 +4,8 @@ const { maskText } = require("../utils/maskText");
 async function maskTextMiddleware(req, res, next) {
   try {
     const fileLoc = req.fileLoc;
-    await maskText(fileLoc);
+    const preProcessedImgPath = await maskText(fileLoc);
+    req.preProcessedImgPath = preProcessedImgPath;
     next();
   } catch (err) {
     next(err);

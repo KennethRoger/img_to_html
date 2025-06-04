@@ -39,7 +39,7 @@ async function ocr(imgPath) {
           block.paragraphs.map((paragraph) =>
             paragraph.lines.map((line) =>
               line.words
-                // .filter((word) => word.confidence > 50)
+                .filter((word) => word.confidence > 50)
                 .map((word) => ({
                   text: word.text,
                   bbox: word.bbox,
@@ -52,7 +52,7 @@ async function ocr(imgPath) {
     );
     // const jsonData = JSON.stringify(data)
     await fs.writeFile(path.join(__dirname, "..", "data/text.JSON"), jsonData);
-    // await fs.unlink(imgPath);
+    await fs.unlink(newPath);
     console.log("successfully written to file data/text.js");
     return data;
   } catch (err) {

@@ -46,9 +46,7 @@ async function maskText(file) {
           Math.floor((y0 + height) / 2)
         )
       );
-      if (bboxData.confidence > 50) {
-        maskRegion(x0, y0, width, height, image);
-      }
+      maskRegion(x0, y0, width, height, image);
     }
 
     // Additional image processing for edge detection
@@ -62,9 +60,13 @@ async function maskText(file) {
     await fs.writeFile(path.join(__dirname, "..", "data/text.JSON"), jsonData);
 
     const baseName = path.basename(file);
-    await image.write(
-      path.join(__dirname, "..", `uploads/preprocessed/${baseName}`)
+    const preProcessedImgPath = path.join(
+      __dirname,
+      "..",
+      `uploads/preprocessed/${baseName}`
     );
+    await image.write(preProcessedImgPath);
+    return preProcessedImgPath;
     // await fs.unlink(file);
     // console.log("Written image details to file");
     console.log("Written image successfully");
