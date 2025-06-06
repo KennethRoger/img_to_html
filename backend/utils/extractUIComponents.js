@@ -31,7 +31,7 @@ function findContours(image) {
     .map(() => Array(width).fill(false));
   const contours = [];
 
-  const edgeThreshold = 100;
+  const edgeThreshold = 50;
 
   for (let y = 0; y < height; ++y) {
     for (let x = 0; x < width; ++x) {

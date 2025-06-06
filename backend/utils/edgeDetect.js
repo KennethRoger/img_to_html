@@ -1,19 +1,19 @@
 const { Jimp, intToRGBA, rgbaToInt } = require("jimp");
 const path = require("node:path");
 
-// function binaryMap(processedImg, threshold = 50) {
-//   const width = processedImg.bitmap.width;
-//   const height = processedImg.bitmap.height;
-//   processedImg.scan(0, 0, width, height, function (x, y, idx) {
-//     const gray = this.bitmap.data[idx];
-//     const value = gray > threshold ? 255 : 0;
-//     this.bitmap.data[idx] = value;
-//     this.bitmap.data[idx + 1] = value;
-//     this.bitmap.data[idx + 2] = value;
-//   });
+function binaryMap(processedImg, threshold = 50) {
+  const width = processedImg.bitmap.width;
+  const height = processedImg.bitmap.height;
+  processedImg.scan(0, 0, width, height, function (x, y, idx) {
+    const gray = this.bitmap.data[idx];
+    const value = gray > threshold ? 255 : 0;
+    this.bitmap.data[idx] = value;
+    this.bitmap.data[idx + 1] = value;
+    this.bitmap.data[idx + 2] = value;
+  });
 
-//   return processedImg;
-// }
+  return processedImg;
+}
 
 // Sobel edge detection algorithm
 function sobelEdgeDetection(image) {
@@ -69,7 +69,7 @@ async function edgeDetect(preProcessedImg) {
     const image = await Jimp.read(preProcessedImg);
 
     const sobelImg = sobelEdgeDetection(image);
-    // const bMappedImg = binaryMap(sobelImg);
+    const bMappedImg = binaryMap(sobelImg);
 
     const baseName = path.basename(preProcessedImg);
     const savePath = path.join(
@@ -78,7 +78,7 @@ async function edgeDetect(preProcessedImg) {
       `uploads/edgeDetected/${baseName}`
     );
 
-    await sobelImg.write(savePath);
+    await bMappedImg.write(savePath);
     console.log("Edge detection algorithm completed");
     return savePath;
   } catch (err) {

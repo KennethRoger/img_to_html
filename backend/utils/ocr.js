@@ -5,15 +5,24 @@ const { Jimp } = require("jimp");
 
 async function ocr(imgPath) {
   try {
-    const worker = await createWorker("eng");
+    const worker = await createWorker("eng", 1);
     const image = await Jimp.read(imgPath);
 
     image.greyscale();
+    // Sharpening kernal
     image.convolute([
       [0, -1, 0],
       [-1, 5, -1],
       [0, -1, 0],
     ]);
+    // image.contrast(0.5);
+    // image.scan(0, 0, image.bitmap.width, image.bitmap.height, function(x, y, idx) {
+    //   const red = this.bitmap.data[idx];
+    //   const value = red > 150 ? 255 : 0;
+    //   this.bitmap.data[idx] = value;
+    //   this.bitmap.data[idx + 1] = value;
+    //   this.bitmap.data[idx + 2] = value;
+    // });
 
     const baseName = path.basename(imgPath);
     const newPath = path.join(
@@ -28,6 +37,8 @@ async function ocr(imgPath) {
         // preserve_interword_spaces: "1",
         // tessedit_char_whitelist:
         //   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@.-_:/$%!?",
+        tessedit_pageseg_mode: 3,
+
       },
       { blocks: true }
     );
