@@ -1,6 +1,16 @@
-const { Jimp } = require("jimp");
+const { Jimp, intToRGBA } = require("jimp");
 const path = require("path");
 const fs = require("fs/promises");
+
+function detectContourColor(image, contours) {
+  for (let contour of contours) {
+    const bbox = contour.bbox;
+    let x0 = bbox.x0;
+    let y0 = bbox.y0;
+    const color = intToRGBA(image.getPixelColor(x0, y0));
+    contour.bgColor = color;
+  }
+}
 
 function drawContour(image, x0, y0, x1, y1, color) {
   const width = x1 - x0;
@@ -22,12 +32,21 @@ function drawContour(image, x0, y0, x1, y1, color) {
 
 async function mapSquares(contours, imgLoc) {
   const img = await Jimp.read(imgLoc);
-  img.greyscale();
+
   const textContourJson = await fs.readFile(
     path.join(__dirname, "..", "data/text.JSON"),
     "utf-8"
   );
   const textContour = JSON.parse(textContourJson);
+
+  // A sly function to do color mapping (Seriously! it should be separate)
+  detectContourColor(img, contours);
+  await fs.writeFile(
+    path.join(__dirname, "..", "data/contours.JSON"),
+    JSON.stringify(contours)
+  );
+
+  img.greyscale();
 
   let textContourImg;
   for (const detail of textContour) {
@@ -42,7 +61,7 @@ async function mapSquares(contours, imgLoc) {
 
   let fullMappedImg;
   for (const contour of contours) {
-    const bbox = contour.bbox
+    const bbox = contour.bbox;
     const x0 = bbox.x0;
     const y0 = bbox.y0;
     const x1 = bbox.x1;
