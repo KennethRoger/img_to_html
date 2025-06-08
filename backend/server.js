@@ -7,7 +7,7 @@ const app = express();
 const { storage } = require("./utils/multerStorage");
 const { maskTextMiddleware } = require("./middlewares/maskTextMiddleware");
 const { edgeDetectMiddleware } = require("./middlewares/edgeDetectMiddleware");
-const extractUIComponentsMiddleware = require("./middlewares/extractUIComponentsMiddleware");
+const extractBboxMiddleware = require("./middlewares/extractBboxMiddleware");
 
 const upload = multer({ storage: storage });
 
@@ -31,7 +31,7 @@ app.post(
   ocrMiddleware,
   maskTextMiddleware,
   edgeDetectMiddleware,
-  extractUIComponentsMiddleware,
+  extractBboxMiddleware,
   (req, res) => {
     const data = req.file;
     // console.log("img", data);
