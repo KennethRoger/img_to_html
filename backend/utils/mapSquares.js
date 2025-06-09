@@ -1,7 +1,9 @@
 const { Jimp, intToRGBA } = require("jimp");
 const path = require("path");
 const fs = require("fs/promises");
+const groupText = require("./groupText");
 
+// Detect color of contour
 function detectContourColor(image, contours) {
   for (let contour of contours) {
     const bbox = contour.bbox;
@@ -12,6 +14,7 @@ function detectContourColor(image, contours) {
   }
 }
 
+// Draws aquare based on contour info
 function drawContour(image, x0, y0, x1, y1, color) {
   const width = x1 - x0;
   const height = y1 - y0;
@@ -30,22 +33,29 @@ function drawContour(image, x0, y0, x1, y1, color) {
   return image;
 }
 
+// Main function whose major goal is to mark squares based on all
+// detected contours but unfortuatley does other things too
 async function mapSquares(contours, imgLoc) {
   const img = await Jimp.read(imgLoc);
 
-  const textContourJson = await fs.readFile(
-    path.join(__dirname, "..", "data/text.JSON"),
-    "utf-8"
-  );
-  const textContour = JSON.parse(textContourJson);
-
-  // A sly function to do color mapping (Seriously! it should be separate)
+  // A sly function to do color mapping for detected contours (Seriously! it should be separate)
   detectContourColor(img, contours);
   await fs.writeFile(
     path.join(__dirname, "..", "data/contours.JSON"),
     JSON.stringify(contours)
   );
 
+  const textContourJson = await fs.readFile(
+    path.join(__dirname, "..", "data/text.JSON"),
+    "utf-8"
+  );
+  const textContour = JSON.parse(textContourJson);
+  // Another sly function to group related texts (fr! it should absolutely be separate)
+  const textContourGrouped = groupText(textContour);
+  await fs.writeFile(
+    path.join(__dirname, "..", "data/textGrouped.JSON"),
+    JSON.stringify(textContourGrouped)
+  );
   img.greyscale();
 
   let textContourImg;

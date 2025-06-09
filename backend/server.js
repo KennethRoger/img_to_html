@@ -8,6 +8,7 @@ const { storage } = require("./utils/multerStorage");
 const { maskTextMiddleware } = require("./middlewares/maskTextMiddleware");
 const { edgeDetectMiddleware } = require("./middlewares/edgeDetectMiddleware");
 const extractBboxMiddleware = require("./middlewares/extractBboxMiddleware");
+const createUiMiddleware = require("./middlewares/createUiMiddleware");
 
 const upload = multer({ storage: storage });
 
@@ -32,6 +33,7 @@ app.post(
   maskTextMiddleware,
   edgeDetectMiddleware,
   extractBboxMiddleware,
+  createUiMiddleware,
   (req, res) => {
     const data = req.file;
     // console.log("img", data);
