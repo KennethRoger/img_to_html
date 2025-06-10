@@ -16,6 +16,10 @@ function App() {
   const [image, setImage] = useState();
   const [file, setFile] = useState();
 
+  const [htmlContent, setHtmlContent] = useState("");
+  const [dimension, setDimension] = useState({ height: 0, width: 0 });
+
+  console.log(htmlContent);
   // Function to set image file and url of image
   function handleFileChange(e) {
     const file = e.target.files[0];
@@ -34,27 +38,40 @@ function App() {
         method: "POST",
         body: formData,
       });
+      setHtmlContent(res.data.ui);
+      setDimension((prev) => ({
+        ...prev,
+        height: res.data.height,
+        width: res.data.width,
+      }));
       console.log(res.message);
     } catch (error) {
       throw error;
     }
   }
 
-  // useEffect(() => {
-  // }, [image]);
-
   return (
     <>
-      <img src={image ? image : null} alt="Nothing to see" width={"300px"} />
-      <form
-        onSubmit={uploadImage}
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        <input type="file" onChange={handleFileChange} />
-        <button type="submit" style={{ width: "50px", marginTop: "20px" }}>
-          upload
-        </button>
-      </form>
+      <div>
+        <img src={image ? image : null} alt="Nothing to see" width={"300px"} />
+        <form
+          onSubmit={uploadImage}
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <input type="file" onChange={handleFileChange} />
+          <button type="submit" style={{ width: "50px", marginTop: "20px" }}>
+            upload
+          </button>
+        </form>
+      </div>
+      <div
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
+        style={{
+          position: "relative",
+          width: `${dimension.width}px`,
+          height: `${dimension.height}px`,
+        }}
+      ></div>
     </>
   );
 }

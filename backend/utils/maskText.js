@@ -39,9 +39,9 @@ async function histogramEqualization(image) {
     function (x, y, idx) {
       const oldValue = this.bitmap.data[idx];
       const newValue = normalizedCdf[oldValue];
-      this.bitmap.data[idx] = newValue; // R
-      this.bitmap.data[idx + 1] = newValue; // G
-      this.bitmap.data[idx + 2] = newValue; // B
+      this.bitmap.data[idx] = newValue;
+      this.bitmap.data[idx + 1] = newValue;
+      this.bitmap.data[idx + 2] = newValue;
     }
   );
 

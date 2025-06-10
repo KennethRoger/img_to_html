@@ -35,11 +35,15 @@ app.post(
   extractBboxMiddleware,
   createUiMiddleware,
   (req, res) => {
-    const data = req.file;
-    // console.log("img", data);
-    res
-      .status(200)
-      .json({ success: true, message: "Successfully recieved formData" });
+    const html = req.html;
+    const ui = req.ui;
+    const width = req.width;
+    const height = req.height;
+    res.status(200).json({
+      success: true,
+      data: { html, ui, width, height },
+      message: "Successfully created HTML",
+    });
   }
 );
 
