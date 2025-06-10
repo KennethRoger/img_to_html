@@ -64,7 +64,7 @@ async function ocr(imgPath) {
     // const jsonData = JSON.stringify(data)
     await fs.writeFile(path.join(__dirname, "..", "data/text.JSON"), jsonData);
     // await fs.unlink(newPath);
-    console.log("successfully written to file data/text.js");
+    console.log("successfully written detected texts to file data/text.js");
     return data;
   } catch (err) {
     throw err;

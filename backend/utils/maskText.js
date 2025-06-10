@@ -86,13 +86,14 @@ async function maskText(file) {
       );
       maskRegion(x0, y0, width, height, image);
     }
+    console.log("Completed masking text and from the image");
 
     // Additional image processing for edge detection
     image.greyscale();
     image.gaussian(2);
     image.contrast(0.1);
     image.normalize();
-    // apply histogram equilization for test purpose later
+    // apply histogram equilization
     image = await histogramEqualization(image);
 
     const jsonData = JSON.stringify(bboDataArr);
@@ -104,11 +105,10 @@ async function maskText(file) {
       "..",
       `uploads/preprocessed/${baseName}`
     );
+
     await image.write(preProcessedImgPath);
+    console.log("Completed image preprocessing. Moving on to edge detection...");
     return preProcessedImgPath;
-    // await fs.unlink(file);
-    // console.log("Written image details to file");
-    console.log("Written image successfully");
   } catch (err) {
     throw err;
   }

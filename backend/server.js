@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
   res.status(200).json("Hello");
 });
 
-// Uploading route
+// Forom uploading image to html creation route
 app.post(
   "/upload",
   upload.single("image"),
@@ -35,15 +35,24 @@ app.post(
   extractBboxMiddleware,
   createUiMiddleware,
   (req, res) => {
-    const html = req.html;
-    const ui = req.ui;
-    const width = req.width;
-    const height = req.height;
-    res.status(200).json({
-      success: true,
-      data: { html, ui, width, height },
-      message: "Successfully created HTML",
-    });
+    try {
+      const html = req.html;
+      const ui = req.ui;
+      const width = req.width;
+      const height = req.height;
+      res.status(200).json({
+        success: true,
+        data: { html, ui, width, height },
+        message: "Successfully created HTML",
+      });
+      console.log("Successfully send html");
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        message: "Some internal conflict has occured!",
+        error: err,
+      });
+    }
   }
 );
 
