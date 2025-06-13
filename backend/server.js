@@ -28,24 +28,25 @@ app.get("/", (req, res) => {
 // Forom uploading image to html creation route
 app.post(
   "/upload",
-  upload.single("image"),
-  ocrMiddleware,
-  maskTextMiddleware,
-  edgeDetectMiddleware,
-  extractBboxMiddleware,
+  // upload.single("image"),
+  // ocrMiddleware,
+  // maskTextMiddleware,
+  // edgeDetectMiddleware,
+  // extractBboxMiddleware,
   createUiMiddleware,
   (req, res) => {
     try {
-      const html = req.html;
-      const ui = req.ui;
-      const width = req.width;
-      const height = req.height;
+      // const html = req.html;
+      // const ui = req.ui;
+      // const width = req.width;
+      // const height = req.height;
+      const data = req.data;
       res.status(200).json({
         success: true,
-        data: { html, ui, width, height },
+        data: data,
         message: "Successfully created HTML",
       });
-      console.log("Successfully send html");
+      console.log("Done");
     } catch (err) {
       res.status(500).json({
         success: false,

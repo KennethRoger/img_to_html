@@ -38,7 +38,7 @@ function App() {
         method: "POST",
         body: formData,
       });
-      setHtmlContent(res.data.ui);
+      setHtmlContent(res.data.html);
       setDimension((prev) => ({
         ...prev,
         height: res.data.height,
@@ -67,7 +67,6 @@ function App() {
       <div
         dangerouslySetInnerHTML={{ __html: htmlContent }}
         style={{
-          position: "relative",
           width: `${dimension.width}px`,
           height: `${dimension.height}px`,
         }}

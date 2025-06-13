@@ -59,7 +59,7 @@ async function mapSquares(contours, imgLoc) {
   img.greyscale();
 
   let textContourImg;
-  for (const detail of textContour) {
+  for (const detail of textContourGrouped) {
     const bbox = detail.bbox;
     const x0 = bbox.x0;
     const y0 = bbox.y0;
